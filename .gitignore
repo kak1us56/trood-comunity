@@ -1,0 +1,33 @@
+# NODE.JS / NEXT.JS
+node_modules/
+.next/
+.env*
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+dist/
+out/
+
+# GO
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+*.mod
+*.sum
+
+bin/
+vendor/
+
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+frontend/out/
