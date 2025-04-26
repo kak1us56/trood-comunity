@@ -7,3 +7,13 @@ export interface ProjectProps {
     autor?: string;
     notifications?: boolean;
 }
+
+export interface VacancyProps {
+    country: string;
+    description: string;
+    experience?: string;
+    field: string;
+    id: number;
+    name: string;
+    project_id: number;
+}

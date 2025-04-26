@@ -1,9 +1,9 @@
 import { AsideBlock } from "@/components/aside-block";
 import { Header } from "@/components/header/header";
-import { ProjectsMain } from "@/components/projects-main";
+import { VacanciesMain } from "@/components/vacancies-main";
 import Head from "next/head";
 
-export default function Projects() {
+export default function Vacancies() {
   return (
     <>
         <Head>
@@ -12,8 +12,8 @@ export default function Projects() {
         <div>
             <Header />
             <main>
-                <AsideBlock active="Projects" />
-                <ProjectsMain />
+                <AsideBlock active="Vacancies" />
+                <VacanciesMain />
             </main>
         </div>
     </>

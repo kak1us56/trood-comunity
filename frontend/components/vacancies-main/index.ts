@@ -1,0 +1,1 @@
+export { VacanciesMain } from './vacancies-main';

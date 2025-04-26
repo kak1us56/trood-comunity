@@ -13,14 +13,14 @@ export const ProjectItem: React.FC<ProjectProps> = ({ id, name, description, not
             onClick={() => {
                 router.push(`/projects?mode=edit&id=${id}`);
             }}
-            className="w-[508px] h-[325px] bg-white rounded-[24px] px-7 cursor-pointer">
+            className="w-[508px] min-h-[325px] bg-white rounded-[24px] px-7 cursor-pointer relative">
             <h2 className="aer-med text-[24px]/[110%] text-black pt-8">
                 {name}
             </h2>
-            <div className="flex flex-col min-h-[149px] gap-[13px] pt-[27px] aer-reg text-[16px]/[110%] lh-n text-black">
+            <div className="flex flex-col min-h-[149px] gap-[13px] pt-[27px] pb-[89px] aer-reg text-[16px]/[110%] lh-n text-black">
                 {description}
             </div>
-            <div className={`${autor ? 'justify-between' : 'justify-end'} flex pt-[45px] items-center`}>
+            <div className={`${autor ? 'justify-between' : 'justify-end'} flex pt-[45px] items-center absolute bottom-4 right-7`}>
                 <div className={`${autor ? 'flex' : 'hidden'} items-center gap-[10px]`}>
                     <Image src={autorIcon} alt="autor" />
                     <p className="text-[#9D9D9D] text-[14px] lh-n aer-reg">

@@ -1,11 +1,11 @@
 import { VacancyProps } from "@/components/constants/interfaces";
 import { useRouter } from "next/router";
-import { useState, useEffect, useRef } from "react";
-import { Vacancy } from "./vacancy-item";
+import { useState, useEffect } from "react";
 
-export const EditProject = () => {
+export const EditVacancy = () => {
     const router = useRouter();
-    const { id } = router.query;
+    const { project_id, id } = router.query;
+    const [vacancyData, setVacancyData] = useState<VacancyProps | null>(null);
     const [formData, setFormData] = useState({
         name: "",
         field: "",
@@ -14,50 +14,56 @@ export const EditProject = () => {
         description: "",
     });
     const [isLoading, setIsLoading] = useState(true);
-    const [vacancies, setVacancies] = useState<VacancyProps[]>([]);
-    const isMounted = useRef(false);
-
+    
     useEffect(() => {
-        fetch(`/api//projects/${id}/vacancies`)
-          .then((res) => res.json())
-          .then((data) => setVacancies(data))
-          .catch((err) => console.error("Error projects", err));
-    }, []);
-
-    useEffect(() => {
-        const fetchProject = async () => {
-            if (!id) return;
-
+        const fetchData = async () => {
+            if (!id || !project_id) return;
+    
             try {
-                const response = await fetch(`/api/projects/${id}`);
-                if (!response.ok) {
-                    throw new Error('Failed to fetch project');
+                const projectRes = await fetch(`/api/projects/${project_id}`);
+                if (!projectRes.ok) {
+                    throw new Error("Failed to fetch project");
+                }
+                const project = await projectRes.json();
+    
+                const vacanciesRes = await fetch(`/api/projects/${project_id}/vacancies`);
+                if (!vacanciesRes.ok) {
+                    throw new Error("Failed to fetch vacancies");
+                }
+                const vacancies = await vacanciesRes.json();
+                const foundVacancy = vacancies.find((vacancy: VacancyProps) => vacancy.id.toString() === id);
+                setVacancyData(foundVacancy);
+    
+                if (project && foundVacancy) {
+                    let formattedDeadline = "";
+
+                    if (project?.deadline) {
+                        const parts = project.deadline.split(".");
+                        if (parts.length === 3) {
+                            const [day, month, year] = parts;
+                            formattedDeadline = `${year}-${month}-${day}`;
+                        }
+                    }
+                    
+                    setFormData({
+                        name: project.name,
+                        field: foundVacancy.field,
+                        experience: foundVacancy.experience,
+                        deadline: formattedDeadline,
+                        description: foundVacancy.description,
+                    });
                 }
     
-                const data = await response.json();
-
-                const [day, month, year] = data.deadline.split(".");
-                const formattedDeadline = `${year}-${month}-${day}`;
-
-                setFormData({
-                    name: data.name,
-                    field: data.field,
-                    experience: data.experience,
-                    deadline: formattedDeadline,
-                    description: data.description,
-                });
-
                 setIsLoading(false);
+    
             } catch (error) {
-                console.error("Failed to load project", error);
+                console.error("Failed to load data", error);
             }
         };
-
-        if (id) {
-            fetchProject();
-        }
-    }, [id]);
-
+    
+        fetchData();
+    }, [id, project_id]);
+    
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { id, value } = e.target;
         setFormData((prev) => ({
@@ -66,51 +72,50 @@ export const EditProject = () => {
         }));
     };
 
-    const saveChanges = async () => {
+    const handleSave = async () => {
+        if (!id || !project_id || !vacancyData) return;
+
         try {
-            const [year, month, day] = formData.deadline.split("-");
+            const [year, month, day] = formData.deadline?.split("-");
             const formattedDeadline = `${day}.${month}.${year}`;
 
-            const updatedProject = {
-                ...formData,
-                deadline: formattedDeadline,
-            };
-
-            await fetch(`/api/projects/${id}`, {
+            const projectRes = await fetch(`/api/projects/${project_id}`);
+            const existingProject = await projectRes.json();
+            
+            await fetch(`/api/projects/${project_id}`, {
                 method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(updatedProject),
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    ...existingProject,
+                    deadline: formattedDeadline,
+                }),
             });
+
+            await fetch(`/api//vacancies/${id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    name: formData.name,
+                    field: formData.field,
+                    experience: formData.experience,
+                    description: formData.description,
+                }),
+            });
+
+            router.push('/projects')
         } catch (error) {
-            console.error("Error auto-saving project:", error);
+            console.error("Failed to save changes", error);
+            alert("Failed to save changes");
         }
     };
-
-    useEffect(() => {
-        if (isLoading) return;
-
-        isMounted.current = true;
-
-        const handleBeforeUnload = async (event: BeforeUnloadEvent) => {
-            event.preventDefault();
-            await saveChanges();
-        };
-
-        window.addEventListener("beforeunload", handleBeforeUnload);
-
-        return () => {
-            if (isMounted.current) {
-                saveChanges();
-            }
-            window.removeEventListener("beforeunload", handleBeforeUnload);
-        };
-    }, [formData, isLoading]);
+    
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
 
     const handleDelete = async () => {
         try {
-            const response = await fetch(`/api/projects/${id}`, {
+            const response = await fetch(`/api/vacancies/${id}`, {
                 method: "DELETE",
             });
     
@@ -134,7 +139,7 @@ export const EditProject = () => {
                 <button
                     onClick={handleDelete}
                     className="w-[186px] h-[47px] bg-[#D1D2D6] rounded-[24px] flex items-center justify-center cursor-pointer text-black aer-med text-[20px] lh-n">
-                    Delete project
+                    Close vacancy
                 </button>
             </div>
             <div className="w-full min-h-[700px] bg-white rounded-[24px] px-[66px] pt-[55px]">
@@ -178,36 +183,11 @@ export const EditProject = () => {
                     </div>
                     <button
                         type="button"
-                        onClick={() => {
-                            if (id) {
-                                router.push(`/vacancies?project_id=${id}`);
-                            }
-                        }}
+                        onClick={handleSave}
                         className="w-[170px] h-[47px] mt-[35px] bg-[#D1D2D6] rounded-[24px] flex items-center justify-center cursor-pointer text-black aer-med text-[20px] lh-n">
-                        Add vacancy
+                        Save changes
                     </button>
                 </form>
-                <div className="pt-[38px]">
-                    <h2 className="aer-med text-[32px] lh-n text-black">
-                        Hired people
-                    </h2>
-                    <div className="flex flex-col">
-                        {vacancies.length > 0 ? (
-                            vacancies?.map((vacancy) => (
-                                <Vacancy
-                                    key={vacancy.id}
-                                    id={vacancy.id}
-                                    name={vacancy.name}
-                                    field={vacancy.field}
-                                    description={vacancy.description}
-                                    project_id={vacancy.project_id}
-                                />
-                            ))
-                        ) : (
-                            <p className="aer-reg text-[16px]/[110%] lh-n text-black pt-3">No vacancies</p>
-                        )}
-                    </div>
-                </div>
             </div>
         </div>
     )
