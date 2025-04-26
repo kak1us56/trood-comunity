@@ -1,21 +1,14 @@
-import { AsideBlock } from "@/components/aside-block";
-import { Header } from "@/components/header/header";
-import { ProjectsMain } from "@/components/projects-main";
-import Head from "next/head";
+import { GetServerSideProps } from 'next';
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  return {
+    redirect: {
+      destination: '/projects',
+      permanent: false,
+    },
+  };
+};
 
 export default function HomePage() {
-  return (
-    <>
-      <Head>
-        <title>Trood Comunity</title>
-      </Head>
-      <div>
-        <Header />
-        <main>
-          <AsideBlock />
-          <ProjectsMain />
-        </main>
-      </div>
-    </>
-  )
+  return null;
 }

@@ -1,6 +1,9 @@
 export interface ProjectProps {
-    header: string;
-    stages?: string[];
+    id: number;
+    name: string;
+    description?: string;
+    deadline?: string;
+    experience?: string;
     autor?: string;
     notifications?: boolean;
 }

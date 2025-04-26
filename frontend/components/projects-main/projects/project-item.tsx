@@ -3,31 +3,22 @@ import { ProjectProps } from "../../constants/interfaces"
 import autorIcon from './images/autor.png';
 import message from './images/message.png';
 import notification from './images/notification.png';
-import { StateContext, StatesType } from "@/components/constants/context";
-import { useContext } from "react";
+import { useRouter } from "next/router";
 
-export const ProjectItem: React.FC<ProjectProps> = ({ header, stages, notifications, autor }) => {
-    const states: StatesType = useContext(StateContext);
+export const ProjectItem: React.FC<ProjectProps> = ({ id, name, description, notifications, autor }) => {
+    const router = useRouter();
 
     return (
         <div 
             onClick={() => {
-                states.setEditProjectActive(true);
-                states.setProjectsActive(false);
+                router.push(`/projects?mode=edit&id=${id}`);
             }}
-            className="w-[508px] h-[325px] bg-white rounded-[24px] px-7">
+            className="w-[508px] h-[325px] bg-white rounded-[24px] px-7 cursor-pointer">
             <h2 className="aer-med text-[24px]/[110%] text-black pt-8">
-                {header}
+                {name}
             </h2>
-            <div className="flex flex-col h-[139px] gap-[13px] pt-[27px]">
-                {stages && stages.map((stage, i) => (
-                    <div key={i} className="flex gap-[15px] items-center">
-                        <div className="bg-[#E8EBEA] h-[25px] w-1 rounded-[50px]"></div>
-                        <p className="aer-reg text-[16px]/[110%] lh-n text-black">
-                            {stage}
-                        </p>
-                    </div>
-                ))}
+            <div className="flex flex-col min-h-[149px] gap-[13px] pt-[27px] aer-reg text-[16px]/[110%] lh-n text-black">
+                {description}
             </div>
             <div className={`${autor ? 'justify-between' : 'justify-end'} flex pt-[45px] items-center`}>
                 <div className={`${autor ? 'flex' : 'hidden'} items-center gap-[10px]`}>
