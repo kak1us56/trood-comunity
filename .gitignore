@@ -11,16 +11,6 @@ out/
 
 # GO
 *.exe
-*.exe~
-*.dll
-*.so
-*.dylib
-*.test
-*.out
-
-*.mod
-*.sum
-
 bin/
 vendor/
 
