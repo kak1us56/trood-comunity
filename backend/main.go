@@ -36,9 +36,12 @@ func main() {
 	r.PUT("/vacancies/:id", handlers.EditVacancy)
 	r.DELETE("/vacancies/:id", handlers.DeleteVacancy)
 
-	port := "8080"
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
 	log.Println("Server running on http://localhost:" + port)
-
+	
 	if err := r.Run(":" + port); err != nil {
 		log.Fatalf("Server failed to start: %v", err)
 	}
