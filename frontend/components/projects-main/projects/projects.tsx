@@ -14,17 +14,18 @@ export function Projects() {
           .then((data) => setProjects(data))
           .catch((err) => console.error("Error projects", err));
     }, []);
-
+    
+    // Filter passed and active projects by deadline
     const today = new Date();
-
+    
     const activeProjects = projects?.filter((project) => {
-        const [day, month, year]: any = project.deadline?.split('.').map(Number);
+        const [day, month, year] = project.deadline?.split('.').map(Number) as [number, number, number];
         const deadlineDate = new Date(year, month - 1, day);
         return deadlineDate >= today;
     }) || [];
 
     const passedProjects = projects?.filter((project) => {
-        const [day, month, year]: any = project.deadline?.split('.').map(Number);
+        const [day, month, year] = project.deadline?.split('.').map(Number) as [number, number, number];
         const deadlineDate = new Date(year, month - 1, day);
         return deadlineDate < today;
     }) || [];

@@ -67,6 +67,13 @@ export const EditProject = () => {
     };
 
     const saveChanges = async () => {
+        if (!formData.description?.trim() || 
+            !formData.experience?.trim() || 
+            !formData.deadline?.trim()) {
+            alert("Please fill in all the fields to edit the project.");
+            return;
+        }
+
         try {
             const [year, month, day] = formData.deadline.split("-");
             const formattedDeadline = `${day}.${month}.${year}`;
@@ -88,6 +95,7 @@ export const EditProject = () => {
         }
     };
 
+    // Autosave the projects changes (when leaving the page)
     useEffect(() => {
         if (isLoading) return;
 

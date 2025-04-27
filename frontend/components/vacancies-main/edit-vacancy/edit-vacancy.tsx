@@ -20,18 +20,18 @@ export const EditVacancy = () => {
             if (!id || !project_id) return;
     
             try {
-                const projectRes = await fetch(`/api/projects/${project_id}`);
+                const projectRes = await fetch(`/api/projects/${project_id}`); // loading a projects deadline
                 if (!projectRes.ok) {
                     throw new Error("Failed to fetch project");
                 }
                 const project = await projectRes.json();
     
-                const vacanciesRes = await fetch(`/api/projects/${project_id}/vacancies`);
+                const vacanciesRes = await fetch(`/api/projects/${project_id}/vacancies`); // loading vacancies
                 if (!vacanciesRes.ok) {
                     throw new Error("Failed to fetch vacancies");
                 }
                 const vacancies = await vacanciesRes.json();
-                const foundVacancy = vacancies.find((vacancy: VacancyProps) => vacancy.id.toString() === id);
+                const foundVacancy = vacancies.find((vacancy: VacancyProps) => vacancy.id.toString() === id); // find a vacancy by id
                 setVacancyData(foundVacancy);
     
                 if (project && foundVacancy) {
@@ -75,6 +75,14 @@ export const EditVacancy = () => {
     const handleSave = async () => {
         if (!id || !project_id || !vacancyData) return;
 
+        if (!formData.description.trim() || 
+            !formData.experience.trim() || 
+            !formData.deadline.trim() || 
+            !formData.field.trim()) {
+            alert("Please fill in all the fields before to edit the vacancy.");
+            return;
+        }
+
         try {
             const [year, month, day] = formData.deadline?.split("-");
             const formattedDeadline = `${day}.${month}.${year}`;
@@ -82,7 +90,7 @@ export const EditVacancy = () => {
             const projectRes = await fetch(`/api/projects/${project_id}`);
             const existingProject = await projectRes.json();
             
-            await fetch(`/api/projects/${project_id}`, {
+            await fetch(`/api/projects/${project_id}`, { // changes the projects deadline
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -91,7 +99,7 @@ export const EditVacancy = () => {
                 }),
             });
 
-            await fetch(`/api//vacancies/${id}`, {
+            await fetch(`/api//vacancies/${id}`, { // changes vacancy`s propertys
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({

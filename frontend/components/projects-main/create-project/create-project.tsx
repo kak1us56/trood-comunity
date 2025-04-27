@@ -23,6 +23,15 @@ export function CreateProject() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
+        if (!formData.name.trim() || 
+            !formData.description.trim() || 
+            !formData.experience.trim() || 
+            !formData.deadline.trim() || 
+            !formData.field.trim()) {
+            alert("Please fill in all the fields before creating a project.");
+            return;
+        }
+
         const [year, month, day] = formData.deadline.split("-");
         const formattedDeadline = `${day}.${month}.${year}`;
 

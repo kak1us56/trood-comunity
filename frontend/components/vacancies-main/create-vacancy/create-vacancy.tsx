@@ -32,6 +32,15 @@ export function CreateVacancy() {
             field: formData.field,
         };
 
+        if (!formData.name.trim() || 
+            !formData.description.trim() || 
+            !formData.experience.trim() || 
+            !formData.country.trim() || 
+            !formData.field.trim()) {
+            alert("Please fill in all the fields before creating a vacancy.");
+            return;
+        }
+
         try {
             const response = await fetch(`/api/projects/${project_id}/vacancies`, {
                 method: "POST",
