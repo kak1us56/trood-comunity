@@ -37,14 +37,13 @@ func main() {
     r.PUT("/vacancies/:id", handlers.EditVacancy)
     r.DELETE("/vacancies/:id", handlers.DeleteVacancy)
 
-    // >>> здесь берем PORT из переменных окружения
     port := os.Getenv("PORT")
     if port == "" {
-        port = "8080" // если PORT не задан, используем 8080
+        port = "8080"
     }
     log.Println("Server running on http://localhost:" + port)
 
-    if err := r.Run(":" + port); err != nil {
+    if err := r.Run("0.0.0.0:" + port); err != nil {
         log.Fatalf("Server failed to start: %v", err)
     }
 }
