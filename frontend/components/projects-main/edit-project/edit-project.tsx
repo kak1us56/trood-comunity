@@ -209,6 +209,7 @@ export const EditProject = () => {
                                     field={vacancy.field}
                                     description={vacancy.description}
                                     project_id={vacancy.project_id}
+                                    country={vacancy.country}
                                 />
                             ))
                         ) : (
