@@ -1,7 +1,7 @@
 import { VacancyProps } from "@/components/constants/interfaces"
 import { useRouter } from "next/router";
 
-export const Vacancy: React.FC<VacancyProps> = ({ id, name, description, field, project_id }) => {
+export const Vacancy: React.FC<VacancyProps> = ({ id, name, description, field, project_id, country }) => {
     const router = useRouter();
 
     return (
@@ -23,7 +23,10 @@ export const Vacancy: React.FC<VacancyProps> = ({ id, name, description, field, 
                 </div>
                 <div className="aer-reg text-[18px]/[110%] text-black max-w-[320px]">
                     {description}
-                </div>                
+                </div>
+                <div className="hidden">
+                    {country}
+                </div>
             </div>
             <div className="flex gap-[98px] items-center">
                 <div className="bg-[#F3F4F6] w-[60px] h-[40px] flex justify-center items-center rounded-[16px]">
